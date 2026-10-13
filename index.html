@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>桌游练习场 · 21 点 / 百家乐 / 骰宝</title>
+  <meta name="description" content="无需联网的虚拟筹码桌游练习场，包含21点、百家乐和骰宝。">
+  <style>
+:root{color-scheme:dark;--bg:#131918;--panel:#1b2321;--line:#313b36;--muted:#a8b3aa;--text:#edf0e9;--accent:#e5ba79;--green:#a2d4b1;--red:#edaba2;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text)}button,input{font:inherit}button,a,input{-webkit-tap-highlight-color:transparent}button{cursor:pointer;color:inherit}button:disabled{cursor:not-allowed;opacity:.38}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:4px}button{transition:background .16s,transform .16s}button:not(:disabled):active{transform:translateY(1px)}[hidden]{display:none!important}.shell{max-width:1600px;margin:auto;display:grid;grid-template-columns:232px 1fr;min-height:100vh}.sidebar{border-right:1px solid var(--line);padding:36px 22px;display:flex;flex-direction:column;background:#171e1c}.brand{text-decoration:none;color:var(--text);display:flex;align-items:center;gap:12px;font-weight:650;font-size:18px;white-space:nowrap}.brand-mark{display:grid;place-items:center;width:39px;height:44px;border:1px solid #b89160;color:var(--accent);border-radius:10px;font-size:28px;transform:rotate(-7deg)}.brand small{display:block;font-size:8px;letter-spacing:1.7px;margin-top:7px;color:var(--muted);font-weight:400}.nav-label{color:var(--muted);font-size:12px;margin:62px 10px 18px}.game-nav{display:grid;gap:12px}.nav-item{display:flex;align-items:center;gap:15px;text-align:left;border:1px solid transparent;background:transparent;border-radius:12px;padding:18px 12px;font-size:17px}.nav-item small{display:block;font-size:9px;letter-spacing:1.6px;color:var(--muted);margin-top:6px}.nav-item.selected{background:#2b342d;border-color:#475340}.nav-item.selected .nav-symbol,.nav-item.selected .nav-arrow{color:var(--accent)}.nav-symbol{font-family:Georgia,serif;font-size:25px;width:25px;text-align:center}.nav-arrow{margin-left:auto;color:#6f7d70}.nav-item:hover{background:#27302a}.sidebar-note{margin-top:auto;padding:60px 6px 0;color:var(--muted);font-size:12px}.sidebar-note p{font-size:11px;color:#849387;margin-top:12px}.status-dot{display:inline-block;background:#99caa6;width:6px;height:6px;border-radius:50%;margin-right:7px}main{padding:0 42px 24px;min-width:0}.topbar{min-height:93px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);gap:16px}.room-label{font-size:10px;letter-spacing:2px;color:var(--muted)}.wallet{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--muted)}.chip-mini{color:var(--accent);font-size:23px}.wallet strong{font-size:20px;font-weight:550;color:var(--text);margin-left:10px;font-variant-numeric:tabular-nums}.text-button{background:none;border:0;color:var(--muted);padding:12px;font-size:12px}.text-button:hover{color:var(--accent)}.heading{display:flex;justify-content:space-between;align-items:center;padding:31px 0 26px;gap:15px}.eyebrow{font-size:10px;letter-spacing:2px;color:var(--accent)}h1{margin:10px 0;font-size:36px;letter-spacing:-1px;font-weight:600}.heading p{font-size:14px;color:var(--muted);margin:0;line-height:1.8}.rule-button{border:1px solid var(--line);background:transparent;border-radius:8px;padding:12px 15px;font-size:12px;white-space:nowrap}.rule-button span{margin-left:12px;color:var(--accent)}.rules{background:#202a24;border:1px solid #414e3e;border-radius:12px;padding:20px 24px;margin:0 0 24px;font-size:14px;line-height:1.9}.rules p{margin:0 0 6px}.rules table{border-collapse:collapse;margin-top:10px;font-size:13px}.rules th,.rules td{padding:4px 12px;text-align:left;border-bottom:1px solid #3c4a3f}.rules a{color:var(--accent)}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 234px;gap:26px}.play-column{min-width:0}.felt{min-height:405px;position:relative;overflow:hidden;border-radius:22px;border:1px solid #416e58;background:radial-gradient(ellipse at 50% 28%,#2c654f 0%,#204b3c 50%,#193d33 100%);box-shadow:inset 0 0 0 7px #1c4537,inset 0 0 0 8px #50725a55,0 14px 28px #0002;padding:26px 25px 42px}.felt:before{content:"";pointer-events:none;position:absolute;inset:16px;border:1px solid #90b49b26;border-radius:16px}.table-top{position:relative;display:flex;justify-content:space-between;font-size:9px;letter-spacing:1.7px;color:#b9cdbb;gap:12px}.practice-tag{opacity:.6;font-size:8px}.felt-signature{position:absolute;bottom:18px;left:0;right:0;text-align:center;letter-spacing:4px;font-family:Georgia,serif;font-size:9px;color:#a3bea866;pointer-events:none}.hand{position:relative;text-align:center;padding:19px 0 12px}.hand+.hand{border-top:1px solid #afd0bb22;margin-top:11px}.hand-label{display:flex;align-items:center;justify-content:center;gap:12px;color:#d7e6d7;font-size:12px;margin-bottom:14px}.score{background:#ffffff12;border:1px solid #ffffff1a;border-radius:20px;padding:3px 11px;font-variant-numeric:tabular-nums}.cards{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;min-height:88px}.playing-card{background:#f3f1e8;color:#202b27;border:1px solid #e1dfd5;border-radius:9px;width:60px;height:84px;position:relative;box-shadow:0 4px 8px #07160e40;display:grid;place-items:center;font-family:Georgia,serif;flex-shrink:0}.playing-card.red{color:#b44640}.card-rank{position:absolute;top:5px;left:8px;font-size:18px;line-height:1}.card-suit-small{position:absolute;left:9px;top:26px;font-size:12px}.card-suit{font-size:32px;margin-top:10px}.playing-card.back{background:repeating-linear-gradient(45deg,#bb9660 0px,#bb9660 1px,#293f35 1px,#293f35 7px);border:3px solid #d9c39d;box-shadow:inset 0 0 0 3px #293f35,0 4px 8px #07160e40;color:#e9d3aa}.playing-card.back span{background:#293f35;padding:3px 9px;border:1px solid #ac956f;border-radius:50%;font-size:28px}.placeholder-card{width:60px;height:84px;border:1px dashed #94b89c66;border-radius:9px;display:grid;place-items:center;color:#91ad97;font-family:Georgia,serif;font-size:25px}.table-divider{text-align:center;color:#bdcfb4;font-family:Georgia,serif;letter-spacing:4px;font-size:11px;padding:0;margin:8px 0}.bet-options{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:17px;position:relative}.bet-option{border:1px solid #a8c6b044;border-radius:10px;background:#163c304d;padding:14px 8px;color:#e3ebe0;text-align:center;font-size:15px}.bet-option small{display:block;font-size:10px;color:#b0c6b4;margin-top:7px}.bet-option.active{border-color:#dfbd82;background:#dac29520;box-shadow:inset 0 0 0 1px #dfbd8266;color:#f5d29e}.bet-option:hover{background:#c9dfbc15}.result{display:flex;align-items:center;gap:13px;min-height:83px;padding:18px 3px;border-bottom:1px solid var(--line)}.result-icon{width:32px;height:32px;border:1px solid #536246;border-radius:50%;display:grid;place-items:center;color:var(--accent);flex-shrink:0}.result strong{font-size:15px;font-weight:550}.result p{font-size:12px;color:var(--muted);margin:6px 0 0;line-height:1.6}.result #result-delta{margin-left:auto;font-size:20px;white-space:nowrap;color:var(--accent);font-variant-numeric:tabular-nums}.result.win .result-icon,.result.win #result-delta{color:var(--green);border-color:#608168}.result.loss .result-icon,.result.loss #result-delta{color:var(--red);border-color:#805a52}.bet-bar{display:flex;align-items:end;gap:15px;margin-top:22px;flex-wrap:wrap}.stake-picker label{display:block;color:var(--muted);font-size:11px;margin-bottom:10px}.stake-field{background:#232b26;border:1px solid #4b5747;border-radius:8px;display:flex;gap:8px;align-items:center;padding:10px 12px;width:114px;height:45px}.stake-field span{color:var(--accent)}.stake-field input{background:transparent;border:0;outline:0;color:var(--text);width:70px;min-width:0;font-size:16px;font-variant-numeric:tabular-nums;appearance:textfield;-moz-appearance:textfield}.stake-field input::-webkit-inner-spin-button{appearance:none}.stake-field:focus-within{outline:2px solid var(--accent);outline-offset:2px}.quick-chips{display:flex;gap:7px;height:45px;align-items:center}.quick-chips button{width:39px;height:39px;border-radius:50%;background:#222b25;border:1px dashed #6d795e;font-size:11px}.quick-chips button.chosen{border-color:var(--accent);color:var(--accent);background:#3b3b2b}.primary{background:var(--accent);color:#292b21;border:1px solid var(--accent);border-radius:8px;padding:13px 20px;min-height:45px;font-weight:600;font-size:14px}.primary:hover:not(:disabled){background:#f2ca91}.bet-bar .primary{margin-left:auto;min-width:134px}.primary span{margin-left:25px}.action-bar{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:10px;margin-top:15px}.action-bar button{border:1px solid #57624c;border-radius:8px;background:#263028;padding:12px 8px;font-size:15px}.action-bar button:hover:not(:disabled){background:#3c4934}.action-bar small{display:block;color:var(--muted);font-size:10px;margin-top:6px}.table-footnote{font-size:10px;color:var(--muted);line-height:1.7;margin-top:18px}.session-panel{border:1px solid var(--line);border-radius:14px;padding:22px 20px;background:#19211e;align-self:start}.session-title{display:flex;justify-content:space-between;align-items:center}.session-title h2{font-size:15px;font-weight:550;margin:0}.session-title>span{font-size:11px;color:var(--muted)}.session-stats{display:grid;gap:20px;padding:24px 0;border-bottom:1px solid var(--line)}.session-stats span{font-size:11px;color:var(--muted);display:block;margin-bottom:8px}.session-stats strong{font-size:23px;font-weight:450;font-variant-numeric:tabular-nums}.session-stats div+div strong{font-size:16px}.history-header{font-size:12px;padding:22px 0 13px;display:flex;justify-content:space-between;gap:8px}.history-header span{font-size:10px;color:#91a193}#history{list-style:none;padding:0;margin:0}#history li{padding:11px 0;border-bottom:1px solid #303b3333;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}.history-main{min-width:0}.history-main small{display:block;font-size:10px;color:#a5b0a6;margin-top:5px;line-height:1.5}.history-change{font-variant-numeric:tabular-nums;white-space:nowrap}.positive{color:var(--green)}.negative{color:var(--red)}#history .empty-history{line-height:1.9;display:block;color:var(--muted);padding:14px 0 30px;font-size:12px}.tip{margin-top:22px;padding-top:19px;border-top:1px solid var(--line)}.tip .eyebrow{font-size:8px;letter-spacing:1.4px}.tip p{font-size:12px;line-height:1.9;color:var(--muted);margin:11px 0 0}footer{border-top:1px solid var(--line);margin-top:30px;padding-top:19px;font-size:10px;color:#9aaa9c;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.baccarat-hands{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding-top:22px}.baccarat-hands .hand{padding-top:0}.baccarat-hands .hand+.hand{border:0;margin:0}.baccarat-hands .cards{gap:7px}.baccarat-hands .playing-card{width:54px;height:78px}.baccarat-choices{margin-top:38px}.dice-display{display:flex;align-items:center;justify-content:center;gap:22px;padding:26px 0 15px;position:relative}.die{width:72px;height:72px;background:#f3f1e8;border-radius:13px;box-shadow:0 5px 0 #d5d4c9,0 10px 16px #0003;padding:13px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px}.pip{border-radius:50%;background:#203c30;width:100%;height:100%}.die[data-value="1"] .pip{background:#bc5147}.dice-caption{font-size:13px;text-align:center;color:#d4e2d3;min-height:20px;position:relative;margin:7px 0 23px}.dice-category-label{color:#b5cbbb;font-size:10px;letter-spacing:1px;margin:19px 0 10px;position:relative}.dice-main{margin-top:0}.dice-main .bet-option{padding:12px 5px}.dice-advanced{position:relative;margin-top:14px;color:#c5d8c6;font-size:12px}.dice-advanced summary{cursor:pointer;padding:9px 0}.number-options{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.number-options .bet-option{font-size:13px;padding:10px 3px}.number-options .bet-option small{font-size:9px;margin-top:4px}.sum-options{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.sum-options .bet-option{font-size:13px;padding:10px 3px}.sum-options .bet-option small{font-size:9px;margin-top:4px}dialog{max-width:400px;width:calc(100% - 40px);border:1px solid #5f6d55;border-radius:16px;background:#212a24;color:var(--text);padding:28px;box-shadow:0 25px 80px #0008}dialog::backdrop{background:#08120bd0;backdrop-filter:blur(4px)}dialog h2{font-size:20px;margin:0 0 16px}dialog p{font-size:14px;color:var(--muted);line-height:1.8}.dialog-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:25px}.dialog-actions>button:not(.primary){border:1px solid #5e6c54;background:transparent;border-radius:8px;padding:12px;font-size:13px}
+@media(min-width:1450px){main{padding-left:65px;padding-right:65px}.workspace{grid-template-columns:minmax(0,1fr) 260px}.felt{min-height:450px}.hand{padding-top:26px;padding-bottom:22px}.playing-card{width:70px;height:96px}.cards{min-height:96px}}
+@media(max-width:1150px){.shell{grid-template-columns:195px 1fr}.sidebar{padding:30px 16px}.brand{font-size:16px;gap:9px}.brand-mark{width:32px;height:39px}.brand small{font-size:7px}.workspace{grid-template-columns:minmax(0,1fr) 200px;gap:18px}main{padding-left:25px;padding-right:25px}.session-panel{padding:20px 15px}.quick-chips{gap:5px}.quick-chips button{width:34px;height:34px}.bet-bar{gap:10px}.bet-bar .primary{min-width:108px;padding:13px}.primary span{margin-left:12px}.stake-field{width:100px}.stake-field input{width:59px}.felt{padding-left:20px;padding-right:20px}}
+@media(max-width:960px){.workspace{grid-template-columns:minmax(0,1fr)}.session-panel{display:grid;grid-template-columns:1fr 1.2fr;gap:0 28px}.session-title{grid-column:1/-1}.session-stats{grid-column:1;grid-row:2/4;border:0}.history-header{grid-column:2;grid-row:2}#history{grid-column:2;grid-row:3}.tip{grid-column:1/-1}.baccarat-choices{margin-top:25px}.felt{min-height:405px}}
+@media(max-width:650px){.shell{display:block}.sidebar{padding:19px 20px 15px;border-right:0;border-bottom:1px solid var(--line);display:block}.brand{font-size:16px}.brand-mark{width:29px;height:32px;font-size:23px}.brand small{font-size:7px;letter-spacing:2px;margin-top:4px}.nav-label,.sidebar-note,.nav-arrow{display:none}.game-nav{display:flex;gap:8px;margin-top:20px}.nav-item{flex:1;justify-content:center;padding:11px 5px;gap:8px;font-size:14px;border-color:var(--line);border-radius:8px}.nav-symbol{font-size:18px;width:18px}.nav-item small{display:none}main{padding:0 18px 20px}.topbar{min-height:65px}.room-label{font-size:8px;letter-spacing:1px}.wallet{gap:5px;font-size:10px}.wallet strong{font-size:17px;margin-left:5px}.chip-mini{font-size:18px}.text-button{font-size:11px;padding:10px 5px}.heading{padding:24px 0 21px}h1{font-size:29px;margin:8px 0}.heading p{font-size:12px}.rule-button{padding:10px;font-size:11px}.rule-button span{margin-left:5px}.felt{padding:23px 18px 39px;border-radius:17px;min-height:390px}.table-top{font-size:8px;letter-spacing:1px}.practice-tag{font-size:7px}.playing-card{width:54px;height:78px}.cards{gap:7px;min-height:78px}.hand{padding-top:19px;padding-bottom:12px}.hand+.hand{margin-top:12px}.result{min-height:88px}.result strong{font-size:14px}.result p{font-size:11px}.result #result-delta{font-size:17px}.bet-bar{gap:10px;margin-top:20px}.quick-chips{gap:7px}.quick-chips button{width:34px;height:34px}.bet-bar .primary{width:100%;margin:3px 0 0}.stake-field{width:113px}.stake-field input{width:70px}.action-bar{gap:7px;grid-template-columns:1fr 1fr 1.3fr}.action-bar button{font-size:14px;padding:11px 4px}.action-bar small{font-size:9px}.session-panel{margin-top:7px;padding:20px;gap:0 20px}.session-stats strong{font-size:22px}.history-header span{display:none}.baccarat-hands{gap:8px;padding-top:22px}.baccarat-hands .playing-card{width:44px;height:66px;border-radius:6px}.baccarat-hands .cards{gap:4px}.baccarat-hands .card-suit{font-size:24px}.baccarat-hands .card-rank{font-size:16px;left:5px}.baccarat-hands .card-suit-small{left:5px;top:22px;font-size:10px}.baccarat-hands .hand-label{gap:7px}.baccarat-choices{margin-top:28px}.bet-option{font-size:14px}.dice-display{gap:17px;padding-top:24px}.die{width:65px;height:65px;padding:12px;gap:4px}.number-options{grid-template-columns:repeat(3,1fr)}.sum-options{grid-template-columns:repeat(4,1fr)}.dice-advanced summary{min-height:44px;display:flex;align-items:center}.rules{padding:17px;font-size:13px}.rules table{font-size:11px}.rules td,.rules th{padding:4px 7px}}
+@media(max-width:360px){main{padding-left:12px;padding-right:12px}.sidebar{padding-left:14px;padding-right:14px}.room-label{display:none}.topbar{justify-content:flex-end}.felt{padding-left:16px;padding-right:16px}.baccarat-hands .playing-card{width:40px}.session-panel{padding:16px;gap:0 15px}.hand-label{font-size:11px}.dice-display{gap:13px}.die{width:62px;height:62px}}
+@media(pointer:coarse){.quick-chips button{width:44px;height:44px}.bet-option,.text-button,.rule-button{min-height:44px}.nav-item{min-height:48px}}
+@media(prefers-reduced-motion:no-preference){.playing-card,.die{animation:deal-in .24s ease-out both}@keyframes deal-in{from{opacity:.2;transform:translateY(8px) rotate(-3deg)}to{opacity:1;transform:none}}}
+
+</style>
+  
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="#" aria-label="桌游练习场首页"><span class="brand-mark" aria-hidden="true">♠</span><span>桌游练习场<small>THE PRACTICE ROOM</small></span></a>
+      <div class="nav-label">选一张桌，开始练习</div>
+      <nav class="game-nav" aria-label="游戏选择">
+        <button class="nav-item selected" data-game="blackjack" aria-pressed="true"><span class="nav-symbol">A</span><span>21 点<small>BLACKJACK</small></span><span class="nav-arrow">↗</span></button>
+        <button class="nav-item" data-game="baccarat" aria-pressed="false"><span class="nav-symbol">♣</span><span>百家乐<small>BACCARAT</small></span><span class="nav-arrow">↗</span></button>
+        <button class="nav-item" data-game="sicbo" aria-pressed="false"><span class="nav-symbol">⚄</span><span>骰宝<small>SIC BO</small></span><span class="nav-arrow">↗</span></button>
+      </nav>
+      <div class="sidebar-note"><span class="status-dot"></span>单机练习 · 虚拟筹码<p>随时开始，按自己的节奏。</p></div>
+    </aside>
+    <main>
+      <header class="topbar"><span class="room-label">YOUR OWN LITTLE TABLE</span><div class="wallet"><span class="chip-mini" aria-hidden="true">◉</span><span>可用筹码 <strong id="balance">10,000</strong></span><button id="reset" class="text-button">重置</button></div></header>
+      <section class="heading"><div><span class="eyebrow" id="game-number">TABLE 01</span><h1 id="game-title">21 点</h1><p id="game-subtitle">靠近 21，别超过。轮到你决定。</p></div><button id="rules-toggle" class="rule-button" aria-expanded="false" aria-controls="rules">玩法说明 <span>＋</span></button></section>
+      <section class="rules" id="rules" hidden></section>
+      <div class="workspace">
+        <section class="play-column" aria-label="游戏桌">
+          <div class="felt" id="table">
+            <div class="table-top"><span id="table-rule">BLACKJACK PAYS 3:2</span><span class="practice-tag">PRACTICE ONLY</span></div>
+            <div id="play-area"></div>
+            <div class="felt-signature" aria-hidden="true">THE PRACTICE ROOM</div>
+          </div>
+          <div id="result" class="result neutral" role="status" aria-live="polite"><span class="result-icon" aria-hidden="true">↗</span><div><strong id="result-title">准备好，发第一手牌</strong><p id="result-detail">选择本局筹码，再点击「发牌」。</p></div><span id="result-delta"></span></div>
+          <section class="bet-bar" aria-label="本局操作">
+            <div class="stake-picker"><label for="stake">本局筹码</label><div class="stake-field"><span aria-hidden="true">◉</span><input id="stake" type="number" min="10" max="1000" step="10" value="100" inputmode="numeric"></div></div>
+            <div class="quick-chips" aria-label="快速选择筹码"><button data-stake="10">10</button><button data-stake="50">50</button><button data-stake="100" class="chosen">100</button><button data-stake="500">500</button></div>
+            <button id="deal" class="primary">发牌 <span aria-hidden="true">↗</span></button>
+          </section>
+          <div id="blackjack-actions" class="action-bar" hidden><button id="hit">要牌 <small>再来一张</small></button><button id="stand">停牌 <small>轮到庄家</small></button><button id="double">加倍 <small>追加筹码，只补一张</small></button></div>
+          <p class="table-footnote" id="footnote">6 副牌 · 庄家软 17 停牌 · 本版不含分牌、保险与投降</p>
+        </section>
+        <aside class="session-panel" aria-label="练习记录">
+          <div class="session-title"><h2>这次练习</h2><span id="round-count">0 局</span></div>
+          <div class="session-stats"><div><span>累计净变化</span><strong id="net">0</strong></div><div><span>赢 / 输 / 和</span><strong id="record">0 / 0 / 0</strong></div></div>
+          <div class="history-header">最近对局<span>最多 12 局</span></div><ol id="history"><li class="empty-history">还没有记录。<br>从第一局开始就好。</li></ol>
+          <div class="tip"><span class="eyebrow">ONE SMALL NOTE</span><p id="learning-tip">A 可以算 1 或 11。<br>点数会自动选择对你有利的值。</p></div>
+        </aside>
+      </div>
+      <footer>纯练习，无充值或提现。<span>进度保存在当前浏览器。</span></footer>
+    </main>
+  </div>
+  <dialog id="reset-dialog"><h2>重新开始练习？</h2><p>恢复 10,000 筹码，清空对局记录。</p><div class="dialog-actions"><button id="reset-cancel">继续练习</button><button id="reset-confirm" class="primary">重置练习</button></div></dialog>
+  <noscript>请启用浏览器 JavaScript 后进行练习。</noscript>
+<script>
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.TableGames = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  function randomInt(max) {
+    if (!Number.isInteger(max) || max < 1 || max > 4294967296) throw new Error('随机范围无效');
+    const c = globalThis.crypto;
+    if (!c || !c.getRandomValues) throw new Error('浏览器不支持安全随机，请使用新版浏览器');
+    const a = new Uint32Array(1), limit = Math.floor(4294967296 / max) * max;
+    do { c.getRandomValues(a); } while (a[0] >= limit);
+    return a[0] % max;
+  }
+  class Shoe {
+    constructor(decks = 6) { this.decks = decks; this.cards = []; this.shuffle(); }
+    shuffle() {
+      this.cards = [];
+      for (let d = 0; d < this.decks; d++) for (const suit of ['♠', '♥', '♣', '♦'])
+        for (let rank = 1; rank <= 13; rank++) this.cards.push({ rank, suit });
+      for (let i = this.cards.length - 1; i > 0; i--) {
+        const j = randomInt(i + 1);
+        [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
+      }
+    }
+    prepare() { if (this.cards.length < 52) this.shuffle(); }
+    draw() { if (!this.cards.length) throw new Error('牌靴已空'); return this.cards.pop(); }
+  }
+  function blackjackScore(cards) {
+    let total = 0, aces = 0;
+    for (const c of cards) { total += c.rank === 1 ? 11 : Math.min(c.rank, 10); if (c.rank === 1) aces++; }
+    while (total > 21 && aces) { total -= 10; aces--; }
+    return { total, soft: aces > 0, natural: cards.length === 2 && total === 21 };
+  }
+  class Blackjack {
+    constructor(draw) { this.draw = draw; this.player = []; this.dealer = []; this.active = false; this.result = null; }
+    start() {
+      if (this.active) throw new Error('请先完成这局');
+      this.player = [this.draw()]; this.dealer = [this.draw()];
+      this.player.push(this.draw()); this.dealer.push(this.draw());
+      this.active = true; this.result = null;
+      const p = blackjackScore(this.player), d = blackjackScore(this.dealer);
+      if (p.natural || d.natural) {
+        if (p.natural && d.natural) this.finish('push', '双方都是 Blackjack，退回筹码', 0);
+        else if (p.natural) this.finish('win', 'Blackjack！两张牌 21 点，净赢 1.5 倍', 1.5);
+        else this.finish('loss', '庄家 Blackjack，本局结束', -1);
+      }
+      return this.result;
+    }
+    finish(outcome, reason, profit) { this.active = false; this.result = { outcome, reason, profit }; return this.result; }
+    hit() {
+      if (!this.active) throw new Error('请先发牌');
+      this.player.push(this.draw());
+      const p = blackjackScore(this.player).total;
+      if (p > 21) return this.finish('loss', `你有 ${p} 点，爆牌`, -1);
+      if (p === 21) return this.stand();
+      return null;
+    }
+    stand() {
+      if (!this.active) throw new Error('请先发牌');
+      while (blackjackScore(this.dealer).total < 17) this.dealer.push(this.draw());
+      const p = blackjackScore(this.player).total, d = blackjackScore(this.dealer).total;
+      if (d > 21) return this.finish('win', `庄家 ${d} 点，爆牌；你赢了`, 1);
+      if (p > d) return this.finish('win', `你的 ${p} 点大于庄家的 ${d} 点`, 1);
+      if (p === d) return this.finish('push', `双方都是 ${p} 点，退回筹码`, 0);
+      return this.finish('loss', `你的 ${p} 点小于庄家的 ${d} 点`, -1);
+    }
+    double() {
+      if (!this.active || this.player.length !== 2) throw new Error('只有前两张牌可以加倍');
+      this.player.push(this.draw());
+      if (blackjackScore(this.player).total > 21) return this.finish('loss', `加倍后 ${blackjackScore(this.player).total} 点，爆牌`, -1);
+      return this.stand();
+    }
+  }
+  const baccaratValue = c => c.rank >= 10 ? 0 : c.rank;
+  const baccaratScore = cards => cards.reduce((sum, c) => sum + baccaratValue(c), 0) % 10;
+  function bankerDraw(total, third) {
+    if (third === null) return total <= 5;
+    return total <= 2 || (total === 3 && third !== 8) ||
+      (total === 4 && third >= 2 && third <= 7) ||
+      (total === 5 && third >= 4 && third <= 7) ||
+      (total === 6 && (third === 6 || third === 7));
+  }
+  function baccarat(draw) {
+    const player = [draw()], banker = [draw()]; player.push(draw()); banker.push(draw());
+    const p = baccaratScore(player), b = baccaratScore(banker), steps = [];
+    if (p >= 8 || b >= 8) steps.push('出现天牌（8 或 9 点），双方不补牌');
+    else {
+      let third = null;
+      if (p <= 5) { const c = draw(); player.push(c); third = baccaratValue(c); steps.push(`闲家 ${p} 点，补入 ${third} 点`); }
+      else steps.push(`闲家 ${p} 点，停牌`);
+      if (bankerDraw(b, third)) { const c = draw(); banker.push(c); steps.push(`庄家 ${b} 点，按规则补入 ${baccaratValue(c)} 点`); }
+      else steps.push(`庄家 ${b} 点，按规则停牌`);
+    }
+    const ps = baccaratScore(player), bs = baccaratScore(banker);
+    return { player, banker, playerScore: ps, bankerScore: bs, winner: ps > bs ? 'player' : ps < bs ? 'banker' : 'tie', steps };
+  }
+  function baccaratBet(round, selection) {
+    if (!['player', 'banker', 'tie'].includes(selection)) throw new Error('请选择庄、闲或和');
+    if (selection === round.winner) return { outcome: 'win', profit: selection === 'banker' ? 0.95 : selection === 'tie' ? 8 : 1 };
+    if (round.winner === 'tie' && selection !== 'tie') return { outcome: 'push', profit: 0 };
+    return { outcome: 'loss', profit: -1 };
+  }
+  const sumOdds = { 4: 50, 5: 18, 6: 14, 7: 12, 8: 8, 9: 6, 10: 6, 11: 6, 12: 6, 13: 8, 14: 12, 15: 14, 16: 18, 17: 50 };
+  function sicBo(dice, selection) {
+    if (dice.length !== 3 || dice.some(d => !Number.isInteger(d) || d < 1 || d > 6)) throw new Error('骰子点数无效');
+    const sum = dice.reduce((a, b) => a + b, 0), triple = dice.every(d => d === dice[0]);
+    let win = false, odds = 0;
+    if (selection === 'small' || selection === 'big') { win = !triple && (selection === 'small' ? sum >= 4 && sum <= 10 : sum >= 11 && sum <= 17); odds = 1; }
+    else if (selection === 'any') { win = triple; odds = 24; }
+    else if (/^triple-[1-6]$/.test(selection)) { win = triple && dice[0] === Number(selection.split('-')[1]); odds = 150; }
+    else if (/^double-[1-6]$/.test(selection)) { win = dice.filter(d => d === Number(selection.split('-')[1])).length >= 2; odds = 8; }
+    else if (/^face-[1-6]$/.test(selection)) { odds = dice.filter(d => d === Number(selection.split('-')[1])).length; win = odds > 0; }
+    else if (/^sum-\d+$/.test(selection) && sumOdds[Number(selection.split('-')[1])]) { const target = Number(selection.split('-')[1]); win = sum === target; odds = sumOdds[target]; }
+    else throw new Error('下注选项无效');
+    return { sum, triple, outcome: win ? 'win' : 'loss', profit: win ? odds : -1 };
+  }
+  function payoutCents(stake, profit) {
+    if (!Number.isSafeInteger(stake) || stake < 0 || !Number.isFinite(profit) || profit < -1) throw new Error('结算数值无效');
+    return Math.round(stake * (1 + profit));
+  }
+  return { randomInt, Shoe, blackjackScore, Blackjack, baccaratValue, baccaratScore, bankerDraw, baccarat, baccaratBet, sumOdds, sicBo, payoutCents };
+});
+
+</script>
+<script>
+(() => {
+  'use strict';
+  const G = window.TableGames, $ = id => document.getElementById(id);
+  const STORAGE = 'practice-room-v1', START = 1000000;
+  const names = { blackjack: '21 点', baccarat: '百家乐', sicbo: '骰宝' };
+  const sideNames = { banker: '庄', player: '闲', tie: '和' };
+  const specs = {
+    blackjack: { n: '01', subtitle: '靠近 21，别超过。轮到你决定。', rule: 'BLACKJACK PAYS 3:2', foot: '6 副牌 · 庄家软 17 停牌 · 本版不含分牌、保险与投降', tip: 'A 可以算 1 或 11。<br>点数会自动选择对你有利的值。' },
+    baccarat: { n: '02', subtitle: '选庄、闲或和，补牌由规则决定。', rule: 'CLOSEST TO NINE WINS', foot: '8 副牌 · 庄赢扣净赢的 5% · 和局时庄、闲退回筹码', tip: '只看点数的个位。<br>例如：7 + 8 = 15，记作 5 点。' },
+    sicbo: { n: '03', subtitle: '三颗骰子，一次揭晓。', rule: 'THREE DICE · ONE ROLL', foot: '每局选择一项 · 大小遇围骰均输 · 倍率均为净赢倍数', tip: '围骰就是三颗骰子相同。<br>例如 2、2、2，大小都会输。' }
+  };
+  const ruleTexts = {
+    blackjack: `<p><b>目标：</b>比庄家更接近 21，超过 21 就输。A 算 1 或 11，J/Q/K 算 10。</p><p><b>操作：</b>要牌＝再拿一张；停牌＝交给庄家；加倍＝追加同额筹码，只拿一张后停牌。</p><p><b>结算：</b>普通赢局净赢 1 倍；首两张 A + 10 点牌为 Blackjack，净赢 1.5 倍；平局退回本金。</p><p>庄家先检查 Blackjack；不足 17 补牌，所有 17（含软 17）停牌。采用 6 副牌，本版省略分牌、保险和投降。</p>`,
+    baccarat: `<p><b>点数：</b>A 算 1；2–9 按牌面；10/J/Q/K 算 0。总分只取个位，较大者赢。</p><p><b>净赢倍率：</b>闲 1 倍；庄 0.95 倍（扣 5% 佣金）；和 8 倍。和局时押庄、闲退回本金。</p><p><b>补牌：</b>任一方首两张 8 或 9 点为天牌，双方停牌。否则闲 0–5 补牌，6–7 停牌。</p><p>闲停牌时，庄 0–5 补牌。闲补牌时，庄按下表处理：</p><table><thead><tr><th>庄点数</th><th>何时补牌</th></tr></thead><tbody><tr><td>0–2</td><td>总是补牌</td></tr><tr><td>3</td><td>闲第三张不是 8</td></tr><tr><td>4</td><td>闲第三张 2–7</td></tr><tr><td>5</td><td>闲第三张 4–7</td></tr><tr><td>6</td><td>闲第三张 6 或 7</td></tr><tr><td>7</td><td>停牌</td></tr></tbody></table>`,
+    sicbo: `<p><b>大小：</b>小＝总点数 4–10；大＝11–17。都净赢 1 倍，围骰（三颗相同）时大小都输。</p><p><b>围骰：</b>任意围骰净赢 24 倍；指定围骰净赢 150 倍。</p><p><b>点数：</b>选一个数字，出现 1 / 2 / 3 次分别净赢 1 / 2 / 3 倍；指定双骰至少出现两次，净赢 8 倍。</p><p><b>总和：</b>4/17 净赢 50 倍；5/16 为 18；6/15 为 14；7/14 为 12；8/13 为 8；9–12 为 6。总和与点数下注不排除围骰。</p><p>例：押 100，净赢 1 倍＝本金 100 + 赢得 100，共返还 200。本版每局只选一项。</p>`
+  };
+  let state = { balance: START, played: 0, wins: 0, losses: 0, pushes: 0, net: 0, history: [] };
+  let storageOK = true;
+  function validSaved(s) {
+    const ints = ['balance', 'played', 'wins', 'losses', 'pushes', 'net'];
+    return s && ints.every(k => Number.isSafeInteger(s[k])) && s.balance >= 0 && s.balance === START + s.net && s.played >= 0 && s.wins >= 0 && s.losses >= 0 && s.pushes >= 0 && s.played === s.wins + s.losses + s.pushes && Array.isArray(s.history) && s.history.length <= 12 && s.history.every(h => h && Object.hasOwn(names, h.game) && ['win', 'loss', 'push'].includes(h.outcome) && Number.isSafeInteger(h.delta) && Number.isSafeInteger(h.stake) && h.stake >= 1000 && typeof h.label === 'string' && h.label.length < 100);
+  }
+  try { const stored = localStorage.getItem(STORAGE); if (stored) { const parsed = JSON.parse(stored); if (validSaved(parsed)) state = parsed; } } catch (_) { storageOK = false; }
+  let game = 'blackjack', selection = { baccarat: 'banker', sicbo: 'small' };
+  let bj = null, stakeCents = 0, bacRound = null, dice = null;
+  const shoeBJ = new G.Shoe(6), shoeBac = new G.Shoe(8);
+  const fmt = cents => (cents / 100).toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+  const signed = cents => (cents > 0 ? '+' : cents < 0 ? '−' : '') + fmt(Math.abs(cents));
+  const isActive = () => bj && bj.active;
+  function save() { try { localStorage.setItem(STORAGE, JSON.stringify(state)); } catch (_) { storageOK = false; } storageNotice(); }
+  function storageNotice() { document.querySelector('footer span').textContent = storageOK ? '进度保存在当前浏览器。' : '浏览器未允许保存，关闭后进度会丢失。'; }
+  function message(title, detail, kind = 'neutral', delta = null) {
+    $('result').className = 'result ' + kind;
+    $('result-title').textContent = title; $('result-detail').textContent = detail;
+    $('result-delta').textContent = delta === null ? '' : signed(delta);
+    document.querySelector('.result-icon').textContent = kind === 'win' ? '✓' : kind === 'loss' ? '−' : '↗';
+  }
+  function updateSession() {
+    $('balance').textContent = fmt(state.balance); $('net').textContent = signed(state.net);
+    $('net').className = state.net > 0 ? 'positive' : state.net < 0 ? 'negative' : '';
+    $('round-count').textContent = state.played + ' 局'; $('record').textContent = `${state.wins} / ${state.losses} / ${state.pushes}`;
+    const list = $('history'); list.replaceChildren();
+    if (!state.history.length) { const li = document.createElement('li'); li.className = 'empty-history'; li.innerHTML = '还没有记录。<br>从第一局开始就好。'; list.append(li); }
+    for (const h of state.history) {
+      const li = document.createElement('li'), main = document.createElement('span'), small = document.createElement('small'), change = document.createElement('span');
+      main.className = 'history-main'; main.textContent = names[h.game]; small.textContent = `${h.label} · ${fmt(h.stake)} 筹码`; main.append(small);
+      change.className = 'history-change ' + (h.delta > 0 ? 'positive' : h.delta < 0 ? 'negative' : ''); change.textContent = signed(h.delta);
+      li.append(main, change); list.append(li);
+    }
+    const active = !!isActive();
+    document.querySelectorAll('[data-game]').forEach(b => { b.disabled = active; });
+    $('stake').disabled = active; document.querySelectorAll('[data-stake]').forEach(b => { b.disabled = active; });
+    $('deal').disabled = active; $('reset').disabled = active;
+    $('blackjack-actions').hidden = !active;
+    $('double').disabled = !active || bj.player.length !== 2 || state.balance < stakeCents;
+    $('deal').innerHTML = (game === 'blackjack' ? bj && bj.result ? '再发一局' : '发牌' : game === 'baccarat' ? '发牌并结算' : '掷骰并结算') + ' <span aria-hidden="true">↗</span>';
+  }
+  function finish(result, label, explanation) {
+    const returned = G.payoutCents(stakeCents, result.profit), delta = returned - stakeCents;
+    state.balance += returned; state.net += delta; state.played++;
+    if (result.outcome === 'win') state.wins++; else if (result.outcome === 'loss') state.losses++; else state.pushes++;
+    state.history.unshift({ game, outcome: result.outcome, delta, stake: stakeCents, label }); state.history = state.history.slice(0, 12);
+    message(result.outcome === 'win' ? '这一局，你赢了' : result.outcome === 'push' ? '这一局，打和' : '这一局，输了', explanation, result.outcome, delta);
+    save(); renderTable(); updateSession();
+  }
+  function cardsHTML(cards, conceal = false, count = 2) {
+    if (!cards.length) return Array.from({ length: count }, () => '<div class="placeholder-card" aria-hidden="true">·</div>').join('');
+    return cards.map((c, i) => {
+      if (conceal && i === 1) return '<div class="playing-card back" aria-label="庄家暗牌"><span aria-hidden="true">♠</span></div>';
+      const rank = ({ 1: 'A', 11: 'J', 12: 'Q', 13: 'K' })[c.rank] || c.rank;
+      return `<div class="playing-card ${['♥', '♦'].includes(c.suit) ? 'red' : ''}" aria-label="${c.suit}${rank}"><span class="card-rank" aria-hidden="true">${rank}</span><span class="card-suit-small" aria-hidden="true">${c.suit}</span><span class="card-suit" aria-hidden="true">${c.suit}</span></div>`;
+    }).join('');
+  }
+  function handHTML(label, cards, score, hidden = false) {
+    return `<div class="hand"><div class="hand-label">${label}<span class="score">${score}</span></div><div class="cards">${cardsHTML(cards, hidden)}</div></div>`;
+  }
+  function diceHTML(value) {
+    const positions = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+    return `<div class="die" data-value="${value}" aria-label="${value} 点">${Array.from({ length: 9 }, (_, i) => positions[value].includes(i) ? '<span class="pip" aria-hidden="true"></span>' : '<span></span>').join('')}</div>`;
+  }
+  function option(id, label, detail) { return `<button class="bet-option ${selection[game] === id ? 'active' : ''}" data-selection="${id}" aria-pressed="${selection[game] === id}">${label}<small>${detail}</small></button>`; }
+  function sicName(id) {
+    if (id === 'small') return '小'; if (id === 'big') return '大'; if (id === 'any') return '任意围骰';
+    const [kind, n] = id.split('-'); return ({ face: '点数 ', sum: '总和 ', triple: '围骰 ', double: '双骰 ' })[kind] + n;
+  }
+  function renderTable() {
+    const area = $('play-area');
+    if (game === 'blackjack') {
+      const player = bj ? bj.player : [], dealer = bj ? bj.dealer : [], active = isActive();
+      const ps = player.length ? G.blackjackScore(player) : null;
+      area.innerHTML = handHTML('庄家', dealer, dealer.length ? active ? '暗牌待揭晓' : G.blackjackScore(dealer).total + ' 点' : '—', active) + '<p class="table-divider" aria-hidden="true">BLACKJACK</p>' + handHTML('你的手牌', player, ps ? ps.total + ' 点' + (ps.soft ? ' · 软牌' : '') : '—');
+    } else if (game === 'baccarat') {
+      area.innerHTML = '<div class="baccarat-hands">' + handHTML('闲家', bacRound ? bacRound.player : [], bacRound ? bacRound.playerScore + ' 点' : '—') + handHTML('庄家', bacRound ? bacRound.banker : [], bacRound ? bacRound.bankerScore + ' 点' : '—') + '</div><div class="bet-options baccarat-choices" aria-label="下注对象">' + option('player', '闲', '净赢 1 倍') + option('tie', '和', '净赢 8 倍') + option('banker', '庄', '净赢 0.95 倍') + '</div>';
+    } else {
+      const shown = dice || [1, 2, 3];
+      area.innerHTML = `<div class="dice-display" ${dice ? '' : 'aria-label="骰子示意，尚未掷骰"'}>${shown.map(diceHTML).join('')}</div><div class="dice-caption">${dice ? `总点数 ${dice.reduce((a, b) => a + b, 0)}${dice.every(d => d === dice[0]) ? ' · 围骰' : ''}` : '选好筹码，掷出第一局'}</div><div class="bet-options dice-main" aria-label="基础下注">${option('small', '小 · 4–10', '净赢 1 倍')}${option('any', '任意围骰', '净赢 24 倍')}${option('big', '大 · 11–17', '净赢 1 倍')}</div><details class="dice-advanced"><summary>更多玩法 · 点数 / 总和 / 围骰</summary><div class="dice-category-label">指定点数 · 出现几次，净赢几倍</div><div class="number-options">${Array.from({ length: 6 }, (_, i) => option('face-' + (i + 1), '点数 ' + (i + 1), '1 / 2 / 3 倍')).join('')}</div><div class="dice-category-label">三骰总和 · 净赢倍率如下</div><div class="sum-options">${Object.entries(G.sumOdds).map(([n, odds]) => option('sum-' + n, n, odds + ' 倍')).join('')}</div><div class="dice-category-label">指定双骰 · 至少两颗相同</div><div class="number-options">${Array.from({ length: 6 }, (_, i) => option('double-' + (i + 1), '双 ' + (i + 1), '8 倍')).join('')}</div><div class="dice-category-label">指定围骰 · 三颗全相同</div><div class="number-options">${Array.from({ length: 6 }, (_, i) => option('triple-' + (i + 1), '围 ' + (i + 1), '150 倍')).join('')}</div></details>`;
+      if (!['small', 'big', 'any'].includes(selection.sicbo)) area.querySelector('details').open = true;
+    }
+    $('footnote').textContent = specs[game].foot;
+    if (game !== 'blackjack') $('footnote').textContent = '已选：' + (game === 'baccarat' ? sideNames[selection.baccarat] : sicName(selection.sicbo)) + ' · ' + specs[game].foot;
+  }
+  function switchGame(next) {
+    if (isActive() || !Object.hasOwn(specs, next)) return;
+    game = next;
+    document.querySelectorAll('[data-game]').forEach(b => { b.classList.toggle('selected', b.dataset.game === game); b.setAttribute('aria-pressed', String(b.dataset.game === game)); });
+    $('game-number').textContent = 'TABLE ' + specs[game].n; $('game-title').textContent = names[game]; $('game-subtitle').textContent = specs[game].subtitle;
+    $('table-rule').textContent = specs[game].rule; $('rules').innerHTML = ruleTexts[game]; $('rules').hidden = true;
+    $('rules-toggle').setAttribute('aria-expanded', 'false'); $('rules-toggle').querySelector('span').textContent = '＋';
+    $('learning-tip').innerHTML = specs[game].tip;
+    message(game === 'blackjack' ? '准备好，发第一手牌' : game === 'baccarat' ? '先选庄、闲或和' : '先选你想练习的玩法', '选择本局筹码，再点击下方按钮。');
+    renderTable(); updateSession();
+  }
+  function readStake() {
+    const n = Number($('stake').value);
+    if (!Number.isFinite(n) || !Number.isInteger(n) || n < 10 || n > 1000 || n % 10 !== 0) { message('调整一下筹码', '每局 10–1,000，填写 10 的整数倍。', 'loss'); $('stake').focus(); return null; }
+    if (n * 100 > state.balance) { message('可用筹码不足', '减少本局筹码，或点击「重置」重新练习。', 'loss'); return null; }
+    return n * 100;
+  }
+  function begin() {
+    if (isActive()) return;
+    const amount = readStake(); if (amount === null) return;
+    stakeCents = amount;
+    if (game === 'blackjack') {
+      shoeBJ.prepare(); state.balance -= amount; bj = new G.Blackjack(() => shoeBJ.draw()); const result = bj.start();
+      if (result) finish(result, '首轮结算', result.reason);
+      else { message('轮到你了', '要牌、停牌，或在前两张牌时加倍。'); renderTable(); updateSession(); }
+    } else if (game === 'baccarat') {
+      shoeBac.prepare(); bacRound = G.baccarat(() => shoeBac.draw()); state.balance -= amount;
+      const result = G.baccaratBet(bacRound, selection.baccarat), winner = sideNames[bacRound.winner];
+      finish(result, `押${sideNames[selection.baccarat]} · ${winner}${winner === '和' ? '局' : '赢'}`, `闲 ${bacRound.playerScore} · 庄 ${bacRound.bankerScore}，${winner}${winner === '和' ? '局' : '赢'}。${bacRound.steps.join('；')}。${result.outcome === 'push' ? '庄、闲下注退回本金。' : selection.baccarat === 'banker' && result.outcome === 'win' ? '已扣净赢的 5% 佣金。' : ''}`);
+    } else {
+      dice = [G.randomInt(6) + 1, G.randomInt(6) + 1, G.randomInt(6) + 1]; const result = G.sicBo(dice, selection.sicbo); state.balance -= amount;
+      const detail = `${dice.join('、')}，共 ${result.sum} 点。${result.triple && ['small', 'big'].includes(selection.sicbo) ? '出现围骰，大小均输。' : `押${sicName(selection.sicbo)}${result.outcome === 'win' ? `，命中，净赢 ${result.profit} 倍。` : '，未命中。'}`}`;
+      finish(result, `押${sicName(selection.sicbo)} · ${dice.join('/')}`, detail);
+    }
+  }
+  function bjAction(action) {
+    if (!isActive()) return;
+    if (action === 'double') {
+      if (bj.player.length !== 2 || state.balance < stakeCents) return;
+      state.balance -= stakeCents; stakeCents *= 2;
+    }
+    const result = bj[action]();
+    if (result) finish(result, `你 ${G.blackjackScore(bj.player).total} · 庄 ${G.blackjackScore(bj.dealer).total}`, result.reason);
+    else { message('还可以继续决定', `现在 ${G.blackjackScore(bj.player).total} 点，可以要牌或停牌。`); renderTable(); updateSession(); }
+  }
+  document.querySelectorAll('[data-game]').forEach(b => b.addEventListener('click', () => switchGame(b.dataset.game)));
+  document.querySelectorAll('[data-stake]').forEach(b => b.addEventListener('click', () => { if (isActive()) return; $('stake').value = b.dataset.stake; updateChips(); }));
+  function updateChips() { document.querySelectorAll('[data-stake]').forEach(b => b.classList.toggle('chosen', Number(b.dataset.stake) === Number($('stake').value))); }
+  $('stake').addEventListener('input', updateChips);
+  $('play-area').addEventListener('click', e => {
+    const b = e.target.closest('[data-selection]'); if (!b) return;
+    selection[game] = b.dataset.selection;
+    $('play-area').querySelectorAll('[data-selection]').forEach(x => { const active = x.dataset.selection === selection[game]; x.classList.toggle('active', active); x.setAttribute('aria-pressed', String(active)); });
+    $('footnote').textContent = '已选：' + (game === 'baccarat' ? sideNames[selection.baccarat] : sicName(selection.sicbo)) + ' · ' + specs[game].foot;
+  });
+  $('rules-toggle').addEventListener('click', () => { $('rules').hidden = !$('rules').hidden; $('rules-toggle').setAttribute('aria-expanded', String(!$('rules').hidden)); $('rules-toggle').querySelector('span').textContent = $('rules').hidden ? '＋' : '−'; });
+  $('deal').addEventListener('click', begin); for (const action of ['hit', 'stand', 'double']) $(action).addEventListener('click', () => bjAction(action));
+  $('reset').addEventListener('click', () => { if (!isActive()) $('reset-dialog').showModal(); });
+  $('reset-cancel').addEventListener('click', () => $('reset-dialog').close());
+  $('reset-confirm').addEventListener('click', () => { if (isActive()) return; state = { balance: START, played: 0, wins: 0, losses: 0, pushes: 0, net: 0, history: [] }; bj = null; bacRound = null; dice = null; stakeCents = 0; shoeBJ.shuffle(); shoeBac.shuffle(); save(); $('reset-dialog').close(); switchGame(game); });
+  // Only completed rounds are stored. Closing mid-hand abandons the unfinished practice round.
+  storageNotice(); switchGame('blackjack');
+})();
+
+</script>
+</body>
+</html>
