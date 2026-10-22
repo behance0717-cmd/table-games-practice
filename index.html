@@ -268,6 +268,11 @@
   function readStorage(key) { try { return localStorage.getItem(key); } catch (_) { storageOK = false; return null; } }
   try { const parsed = JSON.parse(readStorage(STORAGE)); if (validSaved(parsed)) state = parsed; } catch (_) { /* Ignore malformed old saves. */ }
   try { const p = JSON.parse(readStorage(PREFS)); if (p) prefs = { sound: typeof p.sound === 'boolean' ? p.sound : true, fast: p.fast === true }; } catch (_) { /* Default settings. */ }
+  const practiceParams = new URLSearchParams(location.hash.slice(1));
+  const practiceTicket = practiceParams.get('ticket') || '';
+  const practiceKey = 'practice-sicbo-once-' + practiceTicket;
+  const practiceRequested = practiceParams.get('sicbo-once') === '666' && /^[a-z0-9-]{16,64}$/.test(practiceTicket);
+  let practicePending = practiceRequested && readStorage(practiceKey) !== 'true';
   function save(key = STORAGE, value = state) { try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) { storageOK = false; } storageNotice(); }
   function storageNotice() { $('storage-notice').textContent = storageOK ? '进度保存在当前浏览器。' : '未允许保存，关闭后进度可能丢失。'; }
   let game = 'blackjack', phase = 'betting', selectedSide = 'banker', stakeCents = 0;
@@ -602,11 +607,18 @@
     await settleRound({outcome:bet.outcome,returned,delta:returned-stakeCents},`押${sideNames[selectedSide]} · ${winner}${bac.winner==='tie'?'局':'赢'}`,reason,[{selection:selectedSide,stake:stakeCents,returned,delta:returned-stakeCents}]);
   }
   async function startDice() {
+    const preset = practicePending;
+    if (preset) {
+      practicePending = false;
+      save(practiceKey, true);
+      try { history.replaceState(null, '', location.pathname + location.search); } catch (_) { /* Consumption is also persisted. */ }
+    }
+    $('game-subtitle').textContent = preset ? '本局练习预设：三个六；下一局恢复随机。' : specs.sicbo.subtitle;
     call('停止下注，盖盅摇骰'); message('盖盅摇骰中','筹码已封盘，摇停后由你开盅。');
     $('dice-readout').textContent='三颗骰子正在盅里滚动…'; sound('shake');
     const offsets=[0,-8,9,-10,8,-6,11,-9,7,-8,5,-5,3,-2,0];
     await animate($('dice-cup'),offsets.map((x,i)=>({transform:`translate(${x}px,${i%2?-5:0}px) rotate(${x*.7}deg)`})),1300,{easing:'ease-in-out'});
-    await pause(200); dice=[G.randomInt(6)+1,G.randomInt(6)+1,G.randomInt(6)+1];
+    await pause(200); dice=preset ? [6,6,6] : [G.randomInt(6)+1,G.randomInt(6)+1,G.randomInt(6)+1];
     setPhase('reveal-ready'); call('骰盅已停，等你开盅'); $('dice-readout').textContent='已封盘 · 点击骰盅揭晓';
     message('骰盅停了，轮到你开','点击骰盅，或下方「开盅」按钮。');
   }
@@ -647,6 +659,7 @@
     game=next; document.body.dataset.game=game; bj=null; bac=null; dice=null; stakeCents=0; autoReveal=false; revealQueue=[]; revealIndex=0; roundBets={};
     document.querySelectorAll('button[data-game]').forEach(el=>{if(el.tagName!=='BUTTON')return; const selected=el.dataset.game===game;el.classList.toggle('selected',selected);el.setAttribute('aria-pressed',String(selected));});
     $('game-number').textContent='TABLE '+specs[game].n; $('game-title').textContent=names[game]; $('game-subtitle').textContent=specs[game].subtitle; $('table-rule').textContent=specs[game].rule;
+    if (game === 'sicbo' && practicePending) $('game-subtitle').textContent = '一次练习预设：下一局三个六，用后恢复随机。';
     $('rules').innerHTML=rules[game]; $('rules').hidden=true; $('rules-toggle').setAttribute('aria-expanded','false'); $('rules-toggle').querySelector('span').textContent='＋';
     $('learning-tip').textContent=specs[game].tip; document.querySelector('[data-step=dealing]').textContent=game==='sicbo'?'摇盅':'发牌'; setPhase('betting'); buildScene(); updateSession();
     call('请下注');
@@ -718,7 +731,7 @@
   $('play-area').addEventListener('pointerup',event=>endDrag(event));
   $('play-area').addEventListener('pointercancel',event=>endDrag(event,true));
   if(matchMedia('(max-width: 650px)').matches)$('session-panel').open=false;
-  updateSettings();storageNotice();switchGame('blackjack');
+  updateSettings();storageNotice();switchGame(practiceRequested ? 'sicbo' : 'blackjack');
 })();
 
 </script>
