@@ -24,6 +24,9 @@
 .playing-card.peeling .card-rotor{transform-style:flat}.playing-card.peeling .card-face{z-index:0}.playing-card.peeling .card-back{z-index:1}
 .game-sicbo .dealer-rail{justify-content:center}
 
+/* Leave room for custom stakes and the full bankroll on phones. */
+.stake-field{width:154px}.stake-field input{flex:1;width:0}.stake-picker{max-width:100%}
+
 </style>
 </head>
 <body data-phase="betting" data-game="blackjack">
@@ -56,7 +59,7 @@
           </div>
           <div id="result" class="result neutral" role="status" aria-live="polite"><span class="result-icon" aria-hidden="true">↗</span><div><strong id="result-title">请下注，准备发牌</strong><p id="result-detail">选好筹码，点击「确认发牌」。</p></div><span id="result-delta"></span></div>
           <section class="control-dock" id="control-dock" aria-label="游戏操作">
-            <div class="bet-controls" id="bet-controls"><div class="stake-picker"><label for="stake" id="stake-label">本局筹码</label><div class="stake-field"><span aria-hidden="true">◉</span><input id="stake" type="number" min="10" max="1000" step="10" value="100" inputmode="numeric"></div></div><div class="quick-chips" aria-label="筹码面额"><button data-stake="10" aria-pressed="false">10</button><button data-stake="50" aria-pressed="false">50</button><button data-stake="100" class="chosen" aria-pressed="true">100</button><button data-stake="500" aria-pressed="false">500</button></div><div id="bet-summary" class="bet-summary" aria-live="polite"><span>桌面下注</span><strong id="bet-total">100</strong></div></div>
+            <div class="bet-controls" id="bet-controls"><div class="stake-picker"><label for="stake" id="stake-label">本局筹码</label><div class="stake-field"><span aria-hidden="true">◉</span><input id="stake" type="number" min="0.01" step="0.01" value="100" inputmode="decimal"></div></div><div class="quick-chips" aria-label="筹码面额"><button data-stake="10" aria-pressed="false">10</button><button data-stake="50" aria-pressed="false">50</button><button data-stake="100" class="chosen" aria-pressed="true">100</button><button data-stake="500" aria-pressed="false">500</button></div><div id="bet-summary" class="bet-summary" aria-live="polite"><span>桌面下注</span><strong id="bet-total">100</strong></div></div>
             <div id="bet-tools" class="bet-tools" hidden><button id="undo-bet">↶ 撤销</button><button id="clear-bets">清空</button><button id="repeat-bets">重复上局</button><span id="bet-count">0 个区域</span></div>
             <div class="main-controls"><button id="deal" class="primary">确认发牌 <span aria-hidden="true">↗</span></button><div id="blackjack-actions" class="action-bar" hidden><button id="hit">要牌<small>再来一张</small></button><button id="stand">停牌<small>让庄家开牌</small></button><button id="double">加倍<small>追加同额，只补一张</small></button></div><div id="reveal-actions" class="reveal-actions" hidden><button id="reveal-next" class="primary">翻开下一张</button><button id="reveal-all" class="secondary">全部开牌</button></div><p id="busy-label" class="busy-label" hidden>荷官正在发牌…</p></div>
           </section>
@@ -194,22 +197,30 @@
     else throw new Error('下注选项无效');
     return { sum, triple, outcome: win ? 'win' : 'loss', profit: win ? odds : -1 };
   }
+  function amountCents(value) {
+    const amount = Number(value), cents = Math.round(amount * 100);
+    if (!Number.isFinite(amount) || !Number.isSafeInteger(cents) || cents <= 0 || Math.abs(amount - cents / 100) > Number.EPSILON * Math.max(1, Math.abs(amount))) return null;
+    return cents;
+  }
   function payoutCents(stake, profit) {
     if (!Number.isSafeInteger(stake) || stake < 0 || !Number.isFinite(profit) || profit < -1) throw new Error('结算数值无效');
-    return Math.round(stake * (1 + profit));
+    const returned = Math.round(stake * (1 + profit));
+    if (!Number.isSafeInteger(returned)) throw new Error('结算金额超出可精确计算范围');
+    return returned;
   }
   function validateSicBets(bets) {
     if (!bets || typeof bets !== 'object' || Array.isArray(bets) || !Object.keys(bets).length) throw new Error('先把筹码放到下注区域');
     let total = 0;
     for (const [selection, stake] of Object.entries(bets)) {
       sicBo([1, 2, 3], selection);
-      if (!Number.isSafeInteger(stake) || stake < 1000 || stake > 100000 || stake % 1000 !== 0) throw new Error('每区下注 10–1,000，按 10 的倍数');
+      if (!Number.isSafeInteger(stake) || stake <= 0) throw new Error('请填写大于 0 的筹码金额，最多两位小数');
       total += stake;
+      if (!Number.isSafeInteger(total)) throw new Error('筹码金额超出可精确计算范围');
     }
     return total;
   }
   function addSicBet(bets, selection, increment, balance) {
-    if (!Number.isSafeInteger(balance) || balance < 0 || !Number.isSafeInteger(increment) || increment < 1000 || increment % 1000 !== 0) throw new Error('筹码金额无效');
+    if (!Number.isSafeInteger(balance) || balance < 0 || !Number.isSafeInteger(increment) || increment <= 0) throw new Error('筹码金额无效');
     const next = { ...bets, [selection]: (bets[selection] || 0) + increment };
     const total = validateSicBets(next);
     if (total > balance) throw new Error('筹码不足，请减少桌面下注');
@@ -224,7 +235,7 @@
     const returned = rows.reduce((sum, row) => sum + row.returned, 0), delta = returned - stake;
     return { rows, stake, returned, delta, outcome: delta > 0 ? 'win' : delta < 0 ? 'loss' : 'push' };
   }
-  return { randomInt, Shoe, blackjackScore, Blackjack, baccaratValue, baccaratScore, bankerDraw, baccarat, baccaratBet, sumOdds, sicBo, payoutCents, validateSicBets, addSicBet, settleSicBets };
+  return { randomInt, Shoe, blackjackScore, Blackjack, baccaratValue, baccaratScore, bankerDraw, baccarat, baccaratBet, sumOdds, sicBo, amountCents, payoutCents, validateSicBets, addSicBet, settleSicBets };
 });
 
 </script>
@@ -238,12 +249,12 @@
   const specs = {
     blackjack: { n: '01', subtitle: '牌一张张来，决定交给你。', rule: 'BLACKJACK PAYS 3:2', foot: '6 副牌 · 庄家软 17 停牌 · 不含分牌、保险与投降', tip: '要牌由你决定，庄家按规则补牌。加倍的那张牌会横着摆放。' },
     baccarat: { n: '02', subtitle: '暗牌已就位，慢慢揭晓。', rule: 'PLAYER · BANKER · NINE', foot: '8 副牌 · 庄赢净收益扣 5% · 和局时庄、闲退回本金', tip: '拖动亮边牌的牌角，可以慢慢搓开。也可以点「翻开下一张」或「全部开牌」。' },
-    sicbo: { n: '03', subtitle: '筹码落桌，等你开盅。', rule: 'PLACE YOUR CHIPS · LIFT THE CUP', foot: '同局可押多个区域 · 每区 10–1,000 · 大小与单双遇围骰均输', tip: '先选面额，再点击桌面下注。可同时押大小、点数、总和等，开盅后逐区结算。' }
+    sicbo: { n: '03', subtitle: '筹码落桌，等你开盅。', rule: 'PLACE YOUR CHIPS · LIFT THE CUP', foot: '同局可押多个区域 · 不设单区上限 · 大小与单双遇围骰均输', tip: '先选面额，再点击桌面下注。可同时押大小、点数、总和等，开盅后逐区结算。' }
   };
   const rules = {
     blackjack: '<p><b>目标：</b>比庄家更接近 21，超过 21 就输。A 算 1 或 11，J/Q/K 算 10。</p><p><b>操作：</b>要牌再拿一张；停牌后庄家开牌；加倍追加同额筹码，只补一张，横着摆放。</p><p><b>结算：</b>普通赢局净赢 1 倍；首两张 A＋10 点牌是 Blackjack，净赢 1.5 倍；平局退回本金。</p><p>庄家先检查 Blackjack，不足 17 补牌，软 17 停牌。本版不含分牌、保险和投降。</p>',
     baccarat: '<p><b>流程：</b>确认下注 → 闲、庄、闲、庄依次发暗牌 → 先开闲牌，再开庄牌 → 按规则补牌 → 派彩。你可以点牌翻开，也可以拖动亮边牌的牌角。</p><p><b>点数：</b>A 为 1；2–9 按牌面；10/J/Q/K 为 0；总分只取个位。</p><p><b>净赢：</b>闲 1 倍；庄 0.95 倍（扣净赢的 5%）；和 8 倍。和局时押庄、闲退回本金。</p><p><b>补牌：</b>首两张任一方 8 或 9 为天牌，双方不补。否则闲 0–5 补、6–7 停。闲停牌时庄 0–5 补。</p><table><thead><tr><th>庄点数</th><th>闲补牌后，庄的补牌条件</th></tr></thead><tbody><tr><td>0–2</td><td>总是补牌</td></tr><tr><td>3</td><td>闲第三张不为 8</td></tr><tr><td>4</td><td>闲第三张为 2–7</td></tr><tr><td>5</td><td>闲第三张为 4–7</td></tr><tr><td>6</td><td>闲第三张为 6 或 7</td></tr><tr><td>7</td><td>停牌</td></tr></tbody></table>',
-    sicbo: '<p><b>下注：</b>先选每枚筹码面额，再点击下注区域。每次点击叠加，可同时押多个区域。开始摇盅后封盘，不能改注。</p><p><b>操作：</b>盖盅摇骰 → 等你点盅或「开盅」 → 报点、点亮中奖区域 → 收输注、派赢注。每个区域单独结算，合计净变化才是本局输赢。</p><p><b>大小：</b>小＝4–10，大＝11–17；单双和大小净赢 1 倍，围骰时均输。</p><p><b>其他净赢倍率：</b>任意围骰 24；指定围骰 150；指定双骰至少两颗相同，8；两数的组合同时出现，6；单点出现 1/2/3 次分别为 1/2/3。</p><p><b>总和倍率：</b>4/17 为 50；5/16 为 18；6/15 为 14；7/14 为 12；8/13 为 8；9–12 为 6。点数、总和等下注不排除围骰。</p><p>例：押 100，净赢 1 倍，共返还本金 100＋净赢 100＝200。每区最多 1,000，所有下注合计不能超过余额。</p>'
+    sicbo: '<p><b>下注：</b>先选每枚筹码面额，再点击下注区域。每次点击叠加，可同时押多个区域。开始摇盅后封盘，不能改注。</p><p><b>操作：</b>盖盅摇骰 → 等你点盅或「开盅」 → 报点、点亮中奖区域 → 收输注、派赢注。每个区域单独结算，合计净变化才是本局输赢。</p><p><b>大小：</b>小＝4–10，大＝11–17；单双和大小净赢 1 倍，围骰时均输。</p><p><b>其他净赢倍率：</b>任意围骰 24；指定围骰 150；指定双骰至少两颗相同，8；两数的组合同时出现，6；单点出现 1/2/3 次分别为 1/2/3。</p><p><b>总和倍率：</b>4/17 为 50；5/16 为 18；6/15 为 14；7/14 为 12；8/13 为 8；9–12 为 6。点数、总和等下注不排除围骰。</p><p>例：押 100，净赢 1 倍，共返还本金 100＋净赢 100＝200。金额自定，可押至全部余额；不设单局或单区上限。</p>'
   };
   const freshState = () => ({ balance: START, played: 0, wins: 0, losses: 0, pushes: 0, net: 0, history: [] });
   const fmt = cents => (cents / 100).toLocaleString('zh-CN', { maximumFractionDigits: 2 });
@@ -252,7 +263,7 @@
   const clone = value => JSON.parse(JSON.stringify(value));
   let storageOK = true, state = freshState(), prefs = { sound: true, fast: false };
   function validSaved(s) {
-    return s && ['balance','played','wins','losses','pushes','net'].every(k => Number.isSafeInteger(s[k])) && s.balance >= 0 && s.balance === START + s.net && s.played >= 0 && s.wins >= 0 && s.losses >= 0 && s.pushes >= 0 && s.played === s.wins + s.losses + s.pushes && Array.isArray(s.history) && s.history.length <= 12 && s.history.every(h => h && Object.hasOwn(names,h.game) && ['win','loss','push'].includes(h.outcome) && Number.isSafeInteger(h.delta) && Number.isSafeInteger(h.stake) && h.stake >= 1000 && typeof h.label === 'string' && h.label.length < 160);
+    return s && ['balance','played','wins','losses','pushes','net'].every(k => Number.isSafeInteger(s[k])) && s.balance >= 0 && s.balance === START + s.net && s.played >= 0 && s.wins >= 0 && s.losses >= 0 && s.pushes >= 0 && s.played === s.wins + s.losses + s.pushes && Array.isArray(s.history) && s.history.length <= 12 && s.history.every(h => h && Object.hasOwn(names,h.game) && ['win','loss','push'].includes(h.outcome) && Number.isSafeInteger(h.delta) && Number.isSafeInteger(h.stake) && h.stake > 0 && typeof h.label === 'string' && h.label.length < 160);
   }
   function readStorage(key) { try { return localStorage.getItem(key); } catch (_) { storageOK = false; return null; } }
   try { const parsed = JSON.parse(readStorage(STORAGE)); if (validSaved(parsed)) state = parsed; } catch (_) { /* Ignore malformed old saves. */ }
@@ -333,7 +344,7 @@
     $('busy-label').hidden = ready || playerTurn || revealing;
     $('busy-label').textContent = phase === 'settling' ? '收输注，派赢注…' : phase === 'revealing' ? '正在揭晓…' : game === 'sicbo' ? '盖盅摇骰中…' : '荷官正在发牌…';
     $('stake-label').textContent = game === 'sicbo' ? '每枚筹码' : '本局筹码';
-    $('bet-total').textContent = fmt(game === 'sicbo' ? sumBets(draftBets) : Number($('stake').value)*100 || 0);
+    $('bet-total').textContent = fmt(game === 'sicbo' ? sumBets(draftBets) : G.amountCents($('stake').value) || 0);
     $('bet-count').textContent = Object.keys(draftBets).length+' 个区域';
     $('undo-bet').disabled = !ready || !betUndo.length; $('clear-bets').disabled = !ready || !Object.keys(draftBets).length; $('repeat-bets').disabled = !ready || !Object.keys(lastSicBets).length;
     $('deal').innerHTML = (game === 'sicbo' ? '确认下注 · 摇盅' : phase === 'settled' ? '再来一局 · 发牌' : '确认下注 · 发牌')+' <span aria-hidden="true">↗</span>';
@@ -386,7 +397,7 @@
     $('effects').replaceChildren(); $('payout-receipt').hidden = true; view = { player:[],dealer:[],banker:[] };
     $('table').className = 'felt game-'+game; $('card-shoe').hidden = game === 'sicbo'; document.querySelector('.discard-rack').hidden = game === 'sicbo';
     if (game === 'blackjack') {
-      $('play-area').innerHTML = '<div class="bj-table">'+handHTML('dealer','庄家')+handHTML('player','你的手牌')+'<div class="round-wager"><span>本局</span><span class="table-chip" id="round-chip">'+fmt(stakeCents || Number($('stake').value)*100 || 0)+'</span></div></div>';
+      $('play-area').innerHTML = '<div class="bj-table">'+handHTML('dealer','庄家')+handHTML('player','你的手牌')+'<div class="round-wager"><span>本局</span><span class="table-chip" id="round-chip">'+fmt(stakeCents || G.amountCents($('stake').value) || 0)+'</span></div></div>';
     } else if (game === 'baccarat') {
       $('play-area').innerHTML = '<div class="baccarat-hands">'+handHTML('player','闲家')+handHTML('banker','庄家')+'</div><p id="reveal-hint" class="reveal-hint">先下注，牌由荷官一张张发。</p><div class="bet-options baccarat-choices" aria-label="下注对象">'+betTile('player','闲','净赢 1 倍')+betTile('tie','和','净赢 8 倍')+betTile('banker','庄','净赢 0.95 倍')+'</div>';
     } else {
@@ -396,7 +407,7 @@
     $('footnote').textContent = specs[game].foot; renderBetStamps(); updateControls();
   }
   function renderBetStamps() {
-    const displayed = game === 'sicbo' ? phase === 'settled' && !Object.keys(draftBets).length ? roundBets : draftBets : game === 'baccarat' ? {[selectedSide]: editable() ? (Number($('stake').value)*100 || 0) : stakeCents} : {};
+    const displayed = game === 'sicbo' ? phase === 'settled' && !Object.keys(draftBets).length ? roundBets : draftBets : game === 'baccarat' ? {[selectedSide]: editable() ? (G.amountCents($('stake').value) || 0) : stakeCents} : {};
     document.querySelectorAll('[data-bet]').forEach(el => {
       const id = el.dataset.bet, amount = displayed[id] || 0;
       el.classList.toggle('has-bet',amount>0); el.classList.toggle('active',game==='baccarat' && id === selectedSide);
@@ -405,7 +416,7 @@
       el.setAttribute('aria-pressed',String(game==='baccarat'?id===selectedSide:amount>0));
       el.setAttribute('aria-label',(game==='sicbo'?sicName(id):sideNames[id])+'，'+el.querySelector('.bet-odds').textContent+(amount?'，已押 '+fmt(amount)+' 筹码':''));
     });
-    if ($('round-chip')) $('round-chip').textContent = fmt(editable() ? Number($('stake').value)*100 || 0 : stakeCents);
+    if ($('round-chip')) $('round-chip').textContent = fmt(editable() ? G.amountCents($('stake').value) || 0 : stakeCents);
     updateControls();
   }
   function tablePoint(el) {
@@ -472,9 +483,9 @@
     }
   }
   function readAmount() {
-    const amount = Number($('stake').value);
-    if (!Number.isInteger(amount) || amount < 10 || amount > 1000 || amount % 10 !== 0) { message('调整一下筹码','填写 10–1,000，按 10 的倍数。','loss'); $('stake').focus(); return null; }
-    return amount*100;
+    const amount = G.amountCents($('stake').value);
+    if (amount === null) { message('调整一下筹码','填写大于 0 的金额，最多两位小数。','loss'); $('stake').focus(); }
+    return amount;
   }
   function showReceipt(receipt) {
     $('receipt-rows').replaceChildren(); $('payout-receipt').hidden = !receipt;
